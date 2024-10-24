@@ -18,15 +18,6 @@ def is_low_point(row_idx, col_idx) -> bool:
         adjacent_indexes.append((row_idx, col_idx + 1))
     return (all(int(heightmap[row_idx][col_idx]) < int(heightmap[row][col]) for row, col in adjacent_indexes))
 
-def part_1():
-    res = 0
-    for i in range(len(heightmap)):
-        for j in range(len(heightmap[0])):
-            if is_low_point(i, j):
-                res += int(heightmap[i][j]) + 1
-
-    print(res)
-
 def find_adjacent_edges(row_idx, col_idx):
     adjacent_indexes = []
     if row_idx > 0:
@@ -49,6 +40,16 @@ def dfs(visited, row_idx, col_idx):
         for node in find_adjacent_edges(row_idx, col_idx):
             dfs(visited, node[0], node[1])
 
+def part1():
+    res = 0
+    for i in range(len(heightmap)):
+        for j in range(len(heightmap[0])):
+            if is_low_point(i, j):
+                res += int(heightmap[i][j]) + 1
+
+    print(res)
+
+
 def part2():
     basins = []
     for i in range(len(heightmap)):
@@ -59,4 +60,5 @@ def part2():
                 basins.append(visited)
     print(functools.reduce(lambda a,b: a*b, [len(basin) for basin in sorted(basins, key=len, reverse=True)[0:3]]))
 
+part1()
 part2()
