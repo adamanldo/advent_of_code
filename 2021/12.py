@@ -1,7 +1,7 @@
 from collections import defaultdict
 graph = defaultdict(list)
 
-with open('input/12', 'r') as f:
+with open('test/12', 'r') as f:
     for line in f.read().splitlines():
         s, e = line.split('-')
         graph[s].append(e)
@@ -20,8 +20,6 @@ def dfs(current, visited):
     for node in graph[current]:
         if node != "start":
             res += dfs(node, visited)
-
-    visited[current] -= 1
 
     return res
 
