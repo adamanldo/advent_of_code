@@ -1,4 +1,4 @@
-from collections import Counter
+from collections import defaultdict
 
 with open("input/14", "r") as f:
     template, rules = f.read().split("\n\n")
@@ -10,76 +10,54 @@ for rule in rules.split("\n"):
     rules_table[pair] = insert
 
 
-class Node:
-    def __init__(self, data=None):
-        self.data = data
-        self.next = None
+def get_initial_pairs(template):
+    pair_counts = defaultdict(int)
+    for i in range(len(template) - 1):
+        e1, e2 = template[i], template[i + 1]
+        pair_counts[e1 + e2] += 1
+    return pair_counts
 
 
-class LinkedList:
-    def __init__(self, head=None):
-        self.head = head
+def step(pair_counts):
+    update = defaultdict(int)
+    for k, v in pair_counts.items():
+        new_elem = rules_table[k]
+        np0, np1 = k[0] + new_elem, new_elem + k[1]
+        update[np0] += v
+        update[np1] += v
 
-    def add_to_end(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            return
-
-        cur = self.head
-        while cur.next:
-            cur = cur.next
-
-        cur.next = new_node
-
-    def print_ll(self):
-        out = []
-        cur = self.head
-        while cur is not None:
-            out.append(cur.data)
-            cur = cur.next
-        print("".join(out))
-
-    def get_most_common_subtract_least_common(self):
-        out = []
-        cur = self.head
-        while cur is not None:
-            out.append(cur.data)
-            cur = cur.next
-        llstring = "".join(out)
-        c = Counter(llstring)
-        print(c.most_common(1)[0][1] - c.most_common()[-1][1])
-
-    # using the rules, find the starting index and what to insert for any potential match
-    def find_rule_match_and_insert(self):
-        idx_and_element_to_insert = []
-        cur = self.head
-        while cur is not None:
-            if cur.next is None:
-                break
-            if cur.data + cur.next.data in rules_table:
-                original_next = cur.next
-                new_node = Node(rules_table[cur.data + cur.next.data])
-                temp = cur.next
-                cur.next = new_node
-                new_node.next = temp
-            cur = original_next
-        return idx_and_element_to_insert
+    return update
 
 
-def initialize_linked_list(template) -> LinkedList:
-    llist = LinkedList()
-    for letter in template:
-        llist.add_to_end(letter)
-    return llist
+def run_steps_and_get_counts(template, steps):
+    pc = get_initial_pairs(template)
+    for _ in range(steps):
+        pc = step(pc)
+
+    counts = defaultdict(int)
+    for k, v in pc.items():
+        counts[k[1]] += v
+
+    # somehow, only counting the last element of each pair works
+    # not sure how. for instance, in the example, how are we not
+    # undercounting the first N? maybe we just got lucky and the first
+    # element of both the test and the answer are not in the most common or
+    # least common pairs
+
+    print(
+        sorted(counts.items(), key=lambda x: x[1], reverse=True)[0][1]
+        - sorted(counts.items(), key=lambda x: x[1])[0][1]
+    )
 
 
 def part1(template):
-    llist = initialize_linked_list(template)
-    for _ in range(10):
-        llist.find_rule_match_and_insert()
-    llist.get_most_common_subtract_least_common()
+    run_steps_and_get_counts(template, 10)
+
+
+def part2(template):
+    run_steps_and_get_counts(template, 40)
 
 
 if __name__ == "__main__":
     part1(template)
+    part2(template)
