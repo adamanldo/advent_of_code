@@ -38,11 +38,9 @@ def run_steps_and_get_counts(template, steps):
     for k, v in pc.items():
         counts[k[1]] += v
 
-    # somehow, only counting the last element of each pair works
-    # not sure how. for instance, in the example, how are we not
-    # undercounting the first N? maybe we just got lucky and the first
-    # element of both the test and the answer are not in the most common or
-    # least common pairs
+    # since we are only counting the last element of each pair,
+    # we will undercount the first element of the first pair by exactly one
+    counts[template[0]] += 1
 
     print(
         sorted(counts.items(), key=lambda x: x[1], reverse=True)[0][1]
