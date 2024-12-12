@@ -46,7 +46,6 @@ def part2():
 
                     if 0 <= x < mr and 0 <= y < mc:
                         antinodes.add((x, y))
-                        scan[x][y] = "#"
                     else:
                         break
                 x, y = x2, y2
@@ -56,7 +55,6 @@ def part2():
 
                     if 0 <= x < mr and 0 <= y < mc:
                         antinodes.add((x, y))
-                        scan[x][y] = "#"
                     else:
                         break
                 x, y = x2, y2
@@ -66,7 +64,6 @@ def part2():
 
                     if 0 <= x < mr and 0 <= y < mc:
                         antinodes.add((x, y))
-                        scan[x][y] = "#"
                     else:
                         break
                 x, y = x1, y1
@@ -76,7 +73,6 @@ def part2():
 
                     if 0 <= x < mr and 0 <= y < mc:
                         antinodes.add((x, y))
-                        scan[x][y] = "#"
                     else:
                         break
     return len(antinodes)
